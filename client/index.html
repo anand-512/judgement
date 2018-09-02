@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lng="en">
+<head>
+    <meta charset="utf-8">
+    <title>Judgement</title>
+    <meta name="description" content="Judgment Card Game">
+    <meta name="author" content="Anand Deshpande">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600|Ubuntu+Condensed" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cormorant+Unicase" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Changa:700" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="client/css/main.css">
+
+    <!-- favicons
+  ================================================== -->
+    <link rel="shortcut icon" href="client/icon.png" type="image/x-icon">
+    <link rel="icon" href="client/icon.png" type="image/x-icon">
+
+</head>
+<body>
+
+<div id="enclose">
+
+    <div id="topbar">
+        <div class='inputs'>
+
+            <div id="form" class="block">
+                Enter Name: <input type="text" id="nameInput" class="input-res" value="Player" required>
+                <button id="createButton"onclick="App.CreateGame()" style="width:98%;">Create a Game</button>
+                Put GameID: <input type="text" id="gameInput" class="input-res" value="">
+                <button id="joinButton"onclick="App.JoinGame()" style="width:98%;">Join Game</button>
+            </div>
+
+            <div class="block" id="claimBox">
+                Enter Claim: <input id="claimInput" class="input-res" name="res" value="0">
+                <button onclick="App.ConfirmClaim()" id="claimButton"style="width:98%;">Confirm Claim</button>
+            </div>
+
+            <div class="block" id="trumpBox">
+                Enter Trump: <select id="selectTrump">
+                <option value="0">Clubs</option>
+                <option value="1">Diamonds</option>claim
+                <option value="2">Spades</option>
+                <option value="3">Hearts</option>
+            </select>
+                <button onclick="App.ConfirmTrump()" id="trumpButton"style="width:98%;">Confirm Trump</button>
+            </div>
+
+
+        </div>
+
+        <div class='center'>
+            <div class="block">
+                <span id="mainTitle">Judgement</span><br>
+                <button id="startGameButton" onclick="App.StartGame()">Start Game</button>
+                <button id="scorecardButton">Scoreboard</button><br>
+
+            </div>
+            <div class="block">
+      <span id="trumpText" style="display:none"></span><br>
+            </div>
+            <div class="block">
+                <span id="messageText">Welcome to Judgement</span>
+            </div>
+            <div class="block">
+                <span id="roundInfo"></span>
+            </div>
+        </div>
+
+        <div class='logss'>
+            <div class="block">
+                <h4>ChatBox</h4>
+                <textarea id="chatBox" readonly></textarea>
+                <input id="chatInput" name="res">
+            </div>
+
+            <div class="block">
+                <h4 id="claimTableHead" style="display:none;">Claim/Hand Table</h4>
+                <table id="claimTable">
+                    <tr>
+                        <th>Players</th>
+                        <th>Claim</th>
+                        <th>Hands</th>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+
+    </div>
+    <div id="container">
+
+        <div id="pot">
+        </div>
+
+        <div id="deck">
+            <div id="overlay">
+            </div>
+        </div>
+    </div>
+    <div id="status">
+        <label id="gameNoText">Game Number : 0 </label>
+        <label id="roundNoText">Round Number : 0 </label>
+    </div>
+
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+
+            <h1>SCOREBOARD</h1>
+            <table id ="scoreTable" class="rwd-table">
+                <tr>
+                    <th>Let</th>
+                    <th>The</th>
+                    <th>Game</th>
+                    <th>Begin</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="client/js/Game.js" type="text/javascript"></script>
+<script src="client/js/Player.js" type="text/javascript"></script>
+<script src="client/js/Scoreboard.js" type="text/javascript"></script>
+<script src="client/js/Hand.js" type="text/javascript"></script>
+<script src="client/js/Deck.js" type="text/javascript"></script>
+<script src="client/js/Card.js" type="text/javascript"></script>
+<script src="client/js/App.js" type="text/javascript"></script>
+<script src="client/js/IO.js" type="text/javascript"></script>
+<script src="client/js/Start.js" type="text/javascript"></script>
+<script src="client/js/Util.js" type="text/javascript"></script>
+</html>
