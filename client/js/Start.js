@@ -1,6 +1,6 @@
 var app = new App();
 
-var socket = io();
+var socket = io('http://vz.local', { path: '/judgement/socket.io' });
 
 var socIO = new IO();
 socIO.init();
@@ -36,5 +36,21 @@ var suitNames = [
     'Spades',
     'Hearts'
 ];
+
+var rankNames = {
+    '2': '2',
+    '3': '3',
+    '4': '4',
+    '5': '5',
+    '6': '6',
+    '7': '7',
+    '8': '8',
+    '9': '9',
+    '10': '10',
+    '11': 'Jack',
+    '12': 'Queen',
+    '13': 'King',
+    '14': 'Ace'
+};
 
 

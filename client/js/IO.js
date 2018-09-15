@@ -18,7 +18,7 @@ var IO = function () {
 
         //{gameId, mySocketId, playerName}
         socket.on('playerJoinedRoom',function (data) {
-            app.numberofPlayers += 1;
+            //app.numberofPlayers += 1;
             chatBox.value += data.playerName + " has joined the Match.\n";
             messageText.textContent = " " + data.playerName + " has joined the Match.\n";
             app.players.push(data);
@@ -38,7 +38,11 @@ var IO = function () {
 
         socket.on('showRoundsToWin', function (data) {
             console.log("inside IO showRoundsToWin");
-            roundInfo.textContent = "Your team needs to win " + data.roundsToWin + " hands";
+            if(data.roundsToWin > 0) {
+                roundInfo.textContent = "Your team needs to win " + data.roundsToWin + " hands";
+            } else {
+                roundInfo.textContent = "Your team has already won this game";
+            }
         });
 
         socket.on('showTrump',function (data) {
@@ -69,7 +73,7 @@ var IO = function () {
         socket.on('getClaim',function (data) {
             //claimButton.disabled=false;
             console.log("inside IO getClaim");
-            messageText.textContent=" Enter Claim For Your Cards";
+            messageText.textContent=" Enter your Bid For the game";
             app.hostId=data.hostId;
         });
 
@@ -95,7 +99,7 @@ var IO = function () {
         });
 
         socket.on('BroadcastPlayerClaim',function (data) {
-            messageText.textContent=" "+data.name+" has Claimed "+data.claim+" hands."
+            messageText.textContent=" "+data.name+" has Bid "+data.claim+" hands."
             update_claim(data);
         });
 
@@ -110,12 +114,21 @@ var IO = function () {
 
         socket.on('selectTrump',function (data) {
             messageText.textContent="Choose Trump for the game";
+            if(socket.id == data.socketId) {
+                messageText.textContent="You won the bid. Choose the Trump!";
+            } else {
+                messageText.textContent= data.playerName + " won the bid. He'll decide the Trump";
+            }
             //trumpBox.style.display = 'block';
             //overlay.style.display='none';
         });
 
         socket.on('getResponse',function (data) {
-            messageText.textContent="Its Your Turn to Play!";
+            if(socket.id == data.socketId) {
+                messageText.textContent="It's your Turn to Play!";
+            } else {
+                messageText.textContent="It's "+ data.playerName + "'s Turn to Play!";
+            }
             overlay.style.display='none';
         });
 
@@ -125,6 +138,41 @@ var IO = function () {
             game.showTrump();
             game.turn = game.startPlayer;
             App.startRounds();
+        });
+
+        socket.on('Response', function (data) {
+            console.log("playerResponse"+game.turn+"is"+data.resValue.rank+data.resValue.suit);
+            socket.emit('hostBroadcastPlayerResponse',{gameId:app.gameId,name:data.name,id:game.turn,res:data.resValue})
+            app.playResponse(data);
+        });
+
+        socket.on('BroadcastPlayerResponse',function (data) {
+            display_response(data)
+            messageText.textContent=" "+data.name+" played "+ rankNames[data.res.rank] +" of "+ suitNames[data.res.suit];
+        });
+
+        socket.on('UndoLastTurn',function (data) {
+            alert("Play a Valid Move!!");
+            card_append(data);
+        });
+
+        socket.on('ClearLastTurn',function (data) {
+            messageText.textContent="Wait for Your Turn";
+            clear_last_turn(data);
+        });
+
+        socket.on('BroadcastPlayerHandWon',function (data) {
+            messageText.textContent=data.name+" Won the Hand";
+            chatBox.value += "\n"+data.name+" Won the Hand\n\n";
+            update_hand(data);
+        });
+
+        socket.on('BroadcastMatchWinner',function (data) {
+            messageText.textContent=data.name+" Won the Match";
+        });
+
+        socket.on('ChatData', function (data) {
+            chatBox.value += ""+data.name+" : "+data.msg+"\n";
         });
 
     }

@@ -2,7 +2,7 @@ var App = function () {
     this.name="";
     this.gameId = 0;
     this.socketId = 0;
-    this.numberofPlayers = 0;
+    //this.numberofPlayers = 0;
     this.players=[];
     this.hostId=0;
 
@@ -10,10 +10,44 @@ var App = function () {
     this.hostGameinit = function (data) {
         this.gameId = data.gameId;
         this.socketId = data.mySocketId;
-        this.numberofPlayers = 1;
+        //this.numberofPlayers = 1;
 
         messageText.textContent=data.gameId;
         gameInput.value=data.gameId;
+    };
+
+    this.playResponse = function (data) {
+        console.log(data.resValue);
+        var playerResponse = Game.players[game.turn].play(data.resValue);
+        console.log(playerResponse);
+
+        if(game.turn == game.startPlayer){
+            game.roundSuit = playerResponse.suit.str;
+            game.round.splice(0,0,[playerResponse,Game.players[game.turn].playerNum]);
+            game.turn=(game.turn+1)%4;
+        }else if(playerResponse.suit.str==game.roundSuit) {
+            game.round.splice(0,0,[playerResponse,Game.players[game.turn].playerNum]);
+            game.turn=(game.turn+1)%4;
+        } else if(Game.players[game.turn].hand.hasCardofSuit(game.roundSuit)) {
+            console.log("play the right move!");
+            Game.players[game.turn].hand.addCard(playerResponse);
+            console.log(Game.players[game.turn].name);
+            console.log(Game.players[game.turn].hand);
+            socket.emit('hostUndoLastTurn',{socketId:Game.players[game.turn].id,rank:data.resValue.rank,suit:data.resValue.suit});
+            socket.emit("hostBroadcastClearLastTurn",{gameId:app.gameId,id:game.turn});
+            Game.players[game.turn].getResponse();
+        } else{
+            game.round.splice(0,0,[playerResponse,Game.players[game.turn].playerNum]);
+            game.turn=(game.turn+1)%4;
+        }
+
+        // game.round[game.turn]=data.resValue
+
+        if(game.round.length==4){
+            game.getWinner();
+        }else {
+            Game.players[game.turn].getResponse();
+        }
     };
 };
 
@@ -46,7 +80,7 @@ App.StartGame = function () {
         game.Addplayers(app.players);
         game.score.initScore();
         startGameButton.disabled=true;
-        game.gameNo=13;
+        game.gameNo=2;
         game.startGame();
     } else {
         alert("Wait for other Players to join");

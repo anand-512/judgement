@@ -10,10 +10,10 @@ function Scoreboard(){
     // this.showScore = function() {
     //     console.log(this.score);
     // }
-    // this.updateScore = function(index,val) {
-    //     this.score[index]+=val
-    // }
-    // this.displayWinner= function() {
-    //     return this.score.indexOf(Math.max(...this.score));
-    // }
+    this.updateScore = function(index,val) {
+        this.score[index]+=val
+    };
+    this.displayWinner= function() {
+        return this.score.indexOf(Math.max(...this.score));
+    };
 };

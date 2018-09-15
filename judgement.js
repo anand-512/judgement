@@ -24,19 +24,18 @@ exports.initGame = function(sio, socket){
      gameSocket.on('hostSelectTrump', hostSelectTrump);
      gameSocket.on('hostGetResponse', hostGetResponse);
      gameSocket.on('trumpChosen', trumpChosen);
-    // gameSocket.on('hostBroadcastPlayerResponse',hostBroadcastPlayerResponse)
-    // gameSocket.on('hostBroadcastPlayerHandWon',hostBroadcastPlayerHandWon)
-    // gameSocket.on('hostBroadcastMatchWinner',hostBroadcastMatchWinner);
-    // gameSocket.on('BroadcastChatData',BroadcastChatData);
-    // gameSocket.on('hostUndoLastTurn', hostUndoLastTurn);
-    // gameSocket.on('hostBroadcastClearLastTurn',hostBroadcastClearLastTurn);
+     gameSocket.on('playerResponse', playerResponse);
+     gameSocket.on('hostBroadcastPlayerResponse',hostBroadcastPlayerResponse);
+     gameSocket.on('hostUndoLastTurn', hostUndoLastTurn);
+     gameSocket.on('hostBroadcastClearLastTurn',hostBroadcastClearLastTurn);
+     gameSocket.on('hostBroadcastPlayerHandWon',hostBroadcastPlayerHandWon)
+     gameSocket.on('hostBroadcastMatchWinner',hostBroadcastMatchWinner);
+     gameSocket.on('BroadcastChatData',BroadcastChatData);
+    //
+    //
     // gameSocket.on('hostValidClaim',hostValidClaim);
     //
-    //
-    // // Player Eventssss
-    // gameSocket.on('playerJoinGame', playerJoinGame);
-    //
-    // gameSocket.on('playerResponse', playerResponse);
+
 }
 
 function hostCreateNewGame() {
@@ -123,14 +122,49 @@ function hostBroadcastClearPot(data) {
 };
 
 function hostSelectTrump(data) {
-    io.to(data.socketId).emit('selectTrump',data);
+    //io.to(data.socketId).emit('selectTrump',data);
+    io.sockets.in(data.gameId).emit('selectTrump',data);
 };
 
 function hostGetResponse(data) {
-    io.to(data.socketId).emit('getResponse',data);
+    //io.to(data.socketId).emit('getResponse',data);
+    io.sockets.in(data.gameId).emit('getResponse',data);
 };
 
 function trumpChosen(data) {
     io.to(data.hostId).emit('trumpChosen',data);
+};
+
+function playerResponse(data) {
+    io.to(data.hostId).emit('Response',data);
+    console.log("Inside Player Response:"+data.resValue);
+};
+
+function hostBroadcastPlayerResponse(data) {
+    io.sockets.in(data.gameId).emit('BroadcastPlayerResponse',data)
+    console.log("inside hostBroadcastPlayerResponse");
+};
+
+function hostUndoLastTurn(data) {
+    io.to(data.socketId).emit('UndoLastTurn',data);
+};
+
+function hostBroadcastClearLastTurn(data) {
+    io.sockets.in(data.gameId).emit("ClearLastTurn",data);
+};
+
+function hostBroadcastPlayerHandWon(data) {
+    console.log("inside hostBroadcastPlayerHandWon");
+    io.sockets.in(data.gameId).emit('BroadcastPlayerHandWon',data)
+};
+
+function hostBroadcastMatchWinner(data) {
+    console.log("inside hostBroadcastMatchWinner");
+    io.sockets.in(data.gameId).emit('BroadcastMatchWinner',data)
+};
+
+function BroadcastChatData(data) {
+    console.log("inside BroadcastChatData");
+    io.sockets.in(data.gameId).emit('ChatData',data);
 };
 
